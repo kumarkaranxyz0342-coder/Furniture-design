@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom Furniture</title>
+<meta name="description" content="Sketch your dream furniture, see it in 3D, and have it handmade.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-title="Custom Furniture Designer & Maker">
+
+<header class="top">
+  <a class="logo" href="index.html" data-site="name"></a>
+  <nav>
+    <a class="active" href="index.html" data-i18n="nav.home">Home</a>
+    <a href="studio.html" data-i18n="nav.studio">Studio</a>
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a>
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1><span data-i18n="hero.h1a">Draw it roughly.</span><br><span data-i18n="hero.h1b">We'll shape it perfectly.</span></h1>
+  <p data-i18n="hero.sub">Sketch the furniture you imagine. Our studio straightens your lines, understands what you are drawing, completes the missing parts, and shows it in 3D in the wood you choose. Then we build it by hand.</p>
+  <div class="herobtns">
+    <a class="btn" href="studio.html" data-i18n="hero.b1">Start designing</a>
+    <a class="btn alt" href="ai.html" data-i18n="hero.b2">Try AI Designer</a>
+    <a class="btn ghost" href="contact.html" data-i18n="hero.b3">Contact us</a>
+  </div>
+</section>
+
+<section class="section">
+  <h2 data-i18n="sec.how">How it works</h2>
+  <div class="steps">
+    <div class="step"><span class="num">1</span><h3 data-i18n="s1t">Sketch</h3><p data-i18n="s1p">Draw roughly with your mouse or finger. No need to be neat.</p></div>
+    <div class="step"><span class="num">2</span><h3 data-i18n="s2t">We understand</h3><p data-i18n="s2p">The studio cleans your lines, joins corners and recognises the furniture type.</p></div>
+    <div class="step"><span class="num">3</span><h3 data-i18n="s3t">See it in 3D</h3><p data-i18n="s3p">Choose a wood, change the size, and rotate your design.</p></div>
+    <div class="step"><span class="num">4</span><h3 data-i18n="s4t">We build it</h3><p data-i18n="s4p">Send your design to our workshop and we craft it for you.</p></div>
+  </div>
+</section>
+
+<section class="section alt">
+  <h2 data-i18n="sec.what">What the Design Studio does</h2>
+  <div class="features">
+    <div class="feature"><h3 data-i18n="f1t">✏️ Smart sketch cleanup</h3><p data-i18n="f1p">Wobbly lines become straight, rough boxes become clean rectangles, and corners connect.</p></div>
+    <div class="feature"><h3 data-i18n="f2t">🧠 Understands your drawing</h3><p data-i18n="f2p">It recognises whether you drew a table, chair, bookshelf or bed.</p></div>
+    <div class="feature"><h3 data-i18n="f3t">🪄 Completes your sketch</h3><p data-i18n="f3p">Forgot the legs or shelves? One click and the missing parts are drawn for you.</p></div>
+    <div class="feature"><h3 data-i18n="f4t">🧊 Live 3D model</h3><p data-i18n="f4p">Your sketch turns into a 3D model you can spin, zoom and resize.</p></div>
+    <div class="feature"><h3 data-i18n="f5t">🪵 Material library</h3><p data-i18n="f5p">Try oak, walnut, pine, teak or black steel instantly.</p></div>
+    <div class="feature"><h3 data-i18n="f6t">💾 Saved designs</h3><p data-i18n="f6p">Save your designs, reopen them later, and send them to the workshop.</p></div>
+  </div>
+  <p style="text-align:center;margin-top:24px"><a class="btn" href="studio.html" data-i18n="fcta">Open the Design Studio</a></p>
+</section>
+
+<section class="section">
+  <h2 data-i18n="sec.mat">Our materials</h2>
+  <div class="swatches">
+    <div class="swatch"><i style="background:#c8a06a"></i><span data-i18n="m1">Oak</span></div>
+    <div class="swatch"><i style="background:#5b3a29"></i><span data-i18n="m2">Walnut</span></div>
+    <div class="swatch"><i style="background:#e0c28a"></i><span data-i18n="m3">Pine</span></div>
+    <div class="swatch"><i style="background:#a0693a"></i><span data-i18n="m4">Teak</span></div>
+    <div class="swatch"><i style="background:#2b2b2b"></i><span data-i18n="m5">Black steel</span></div>
+  </div>
+</section>
+
+<section id="reviews" class="section alt reviews">
+  <h2 data-i18n="rev.h2">Customer reviews</h2>
+  <p class="lead" data-i18n="rev.lead">See what people say about the furniture we made for them.</p>
+  <p id="revAvg" class="revavg"></p>
+  <div id="reviewGrid" class="revgrid"></div>
+
+  <form id="reviewForm" class="enquiry reviewform">
+    <h3 data-i18n="rev.form">Write a review</h3>
+    <div class="starrow" id="starRow"></div>
+    <input id="rname" data-i18n-ph="rev.name" placeholder="Your name" required>
+    <input id="rcity" data-i18n-ph="rev.city" placeholder="City (optional)">
+    <textarea id="rtext" rows="3" data-i18n-ph="rev.text" placeholder="Share your experience" required></textarea>
+    <button class="btn" type="submit" data-i18n="rev.send">Post review</button>
+    <p id="revMsg" class="status"></p>
+  </form>
+</section>
+
+<footer class="foot">
+  <div class="logo light" data-site="name"></div>
+  <p data-i18n="foot.tag">Custom furniture designed by you, handcrafted by us.</p>
+  <nav class="footnav">
+    <a href="index.html" data-i18n="nav.home">Home</a> ·
+    <a href="studio.html" data-i18n="nav.studio">Studio</a> ·
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a> ·
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+  <p><a data-link="tel" data-site="phone"></a> · <a data-link="wa">WhatsApp</a> · <a data-link="mail" data-site="email"></a></p>
+  <p class="copy">© <span data-year></span> <span data-site="name"></span>. <span data-i18n="foot.rights">All rights reserved.</span></p>
+</footer>
+
+<script src="site.js"></script>
+<script src="lang.js"></script>
+<script src="reviews.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b0f225bce0f2d3',t:'MTc5MjA4OTU1OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

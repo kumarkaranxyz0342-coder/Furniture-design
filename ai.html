@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Designer</title>
+<meta name="description" content="Describe your furniture in words and the AI assistant draws it and builds a 3D model.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-title="AI Designer">
+
+<header class="top">
+  <a class="logo" href="index.html" data-site="name"></a>
+  <nav>
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="studio.html" data-i18n="nav.studio">Studio</a>
+    <a class="active" href="ai.html" data-i18n="nav.ai">AI Designer</a>
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<section class="section studio-page">
+  <h2 data-i18n="ai.h2">AI Design Assistant</h2>
+  <p class="lead" data-i18n="ai.sub">Just describe what you want — the assistant will sketch it and build a 3D model for you.</p>
+
+  <div class="aigrid">
+    <div class="panel chatcard">
+      <div id="chatLog" class="chatlog"></div>
+      <div class="chips">
+        <button class="chip" data-i18n="chip1" data-prompt="walnut dining table for 6 people, 180cm">Walnut dining table for 6</button>
+        <button class="chip" data-i18n="chip2" data-prompt="modern pine bookshelf with 5 shelves, 200cm tall">Modern pine bookshelf, 5 shelves</button>
+        <button class="chip" data-i18n="chip3" data-prompt="industrial steel frame chair">Industrial steel chair</button>
+        <button class="chip" data-i18n="chip4" data-prompt="king size oak bed with tall headboard">King bed with headboard</button>
+      </div>
+      <div class="chatbar">
+        <input id="aiInput" data-i18n-ph="ai.input" placeholder="e.g. walnut dining table for 6 people, 180cm">
+        <button id="aiSend" class="btn small" data-i18n="ai.send">Send</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="aiMeta" class="aimeta"></div>
+      <canvas id="aiSketch" width="800" height="440"></canvas>
+      <div id="viewerAi"></div>
+      <div class="toolbar aimove">
+        <button id="aiRedo" class="tool" data-i18n="ai.redo">🔄 Generate again</button>
+        <button id="openStudio" class="tool primary">🛠 <span data-i18n="ai.open">Open in Studio</span></button>
+      </div>
+      <p class="status" data-i18n="ai.note">The assistant runs entirely in your browser. Mention the type, wood and size for the best result.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="logo light" data-site="name"></div>
+  <p data-i18n="foot.tag">Custom furniture designed by you, handcrafted by us.</p>
+  <nav class="footnav">
+    <a href="index.html" data-i18n="nav.home">Home</a> ·
+    <a href="studio.html" data-i18n="nav.studio">Studio</a> ·
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a> ·
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+  <p><a data-link="tel" data-site="phone"></a> · <a data-link="wa">WhatsApp</a> · <a data-link="mail" data-site="email"></a></p>
+  <p class="copy">© <span data-year></span> <span data-site="name"></span>. <span data-i18n="foot.rights">All rights reserved.</span></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="site.js"></script>
+<script src="lang.js"></script>
+<script src="ai.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b10ff06abfff23',t:'MTc5MjA5MDc4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

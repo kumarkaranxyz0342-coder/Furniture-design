@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact</title>
+<meta name="description" content="Contact our furniture workshop: phone, WhatsApp, email, address and opening hours.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-title="Contact">
+
+<header class="top">
+  <a class="logo" href="index.html" data-site="name"></a>
+  <nav>
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="studio.html" data-i18n="nav.studio">Studio</a>
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a>
+    <a class="active" href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<section class="section contact">
+  <h2 data-i18n="con.h2">Contact Us</h2>
+  <p class="lead" data-i18n="con.lead">Ready to have your design made? Reach out and we'll get back to you.</p>
+
+  <div class="contact-grid">
+    <div class="ccard"><span class="icon">📞</span><h3 data-i18n="cc.phone">Phone</h3><a data-link="tel" data-site="phone"></a></div>
+    <div class="ccard"><span class="icon">💬</span><h3 data-i18n="cc.wa">WhatsApp</h3><a data-link="wa" data-i18n="cc.chat">Chat with us</a></div>
+    <div class="ccard"><span class="icon">✉️</span><h3 data-i18n="cc.mail">Email</h3><a data-link="mail" data-site="email"></a></div>
+    <div class="ccard"><span class="icon">📍</span><h3 data-i18n="cc.shop">Workshop</h3><p data-site="address"></p></div>
+    <div class="ccard"><span class="icon">🕒</span><h3 data-i18n="cc.hours">Opening hours</h3><p><span data-site="hours"></span><br><span data-site="closed"></span></p></div>
+  </div>
+
+  <form id="enquiry" class="enquiry">
+    <h3 data-i18n="con.fh3">Send us a message on WhatsApp</h3>
+    <input id="cname" data-i18n-ph="con.fname" placeholder="Your name" required>
+    <textarea id="cmsg" rows="4" data-i18n-ph="con.fmsg" placeholder="Tell us what you would like us to make" required></textarea>
+    <button class="btn" type="submit" data-i18n="con.send">Send on WhatsApp</button>
+  </form>
+</section>
+
+<section class="section alt">
+  <h2 data-i18n="faq.h2">Common questions</h2>
+  <div class="faqlist">
+    <details class="faq">
+      <summary data-i18n="faq1q">How long does an order take?</summary>
+      <p data-i18n="faq1a">Usually 2–4 weeks depending on the design. We confirm the exact time when you place the order.</p>
+    </details>
+    <details class="faq">
+      <summary data-i18n="faq2q">Can you make fully custom sizes?</summary>
+      <p data-i18n="faq2a">Yes. Set the exact size in the Design Studio, or send us your measurements on WhatsApp.</p>
+    </details>
+    <details class="faq">
+      <summary data-i18n="faq3q">Do you deliver?</summary>
+      <p data-i18n="faq3a">We deliver safely across Pakistan. In Lahore you can also pick up from the workshop.</p>
+    </details>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="logo light" data-site="name"></div>
+  <p data-i18n="foot.tag">Custom furniture designed by you, handcrafted by us.</p>
+  <nav class="footnav">
+    <a href="index.html" data-i18n="nav.home">Home</a> ·
+    <a href="studio.html" data-i18n="nav.studio">Studio</a> ·
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a> ·
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+  <p><a data-link="tel" data-site="phone"></a> · <a data-link="wa">WhatsApp</a> · <a data-link="mail" data-site="email"></a></p>
+  <p class="copy">© <span data-year></span> <span data-site="name"></span>. <span data-i18n="foot.rights">All rights reserved.</span></p>
+</footer>
+
+<script src="site.js"></script>
+<script src="lang.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b0f30c69c7f2d3',t:'MTc5MjA4OTU5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

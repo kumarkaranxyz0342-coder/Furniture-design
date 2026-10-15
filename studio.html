@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-title="Design Studio">
+
+<header class="top">
+  <a class="logo" href="index.html" data-site="name"></a>
+  <nav>
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a class="active" href="studio.html" data-i18n="nav.studio">Studio</a>
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a>
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<section id="studio" class="studio">
+  <h2 data-i18n="studio.h2">Design Studio</h2>
+
+  <div class="controls">
+    <label><span data-i18n="st.furn">Furniture</span>
+      <select id="type">
+        <option value="table" data-i18n="opt.table">Table</option>
+        <option value="chair" data-i18n="opt.chair">Chair</option>
+        <option value="shelf" data-i18n="opt.shelf">Bookshelf</option>
+        <option value="bed" data-i18n="opt.bed">Bed</option>
+      </select>
+    </label>
+    <label><span data-i18n="st.mat">Material</span>
+      <select id="material"></select>
+    </label>
+    <label><span data-i18n="st.mode">3D mode</span>
+      <select id="mode">
+        <option value="exact" data-i18n="opt.exact">My drawing (exact)</option>
+        <option value="template" data-i18n="opt.template">Smart template</option>
+      </select>
+    </label>
+    <label><span data-i18n="st.dims">Depth mode</span>
+      <select id="dims">
+        <option value="3d" data-i18n="d3">3D – full piece</option>
+        <option value="2d" data-i18n="d2">2D – flat panels</option>
+        <option value="1d" data-i18n="d1">1D – bars</option>
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" id="snap" checked> <span data-i18n="st.smart">Smart cleanup</span></label>
+    <label class="check"><input type="checkbox" id="auto" checked> <span data-i18n="st.auto">Auto-detect furniture</span></label>
+    <label class="check"><input type="checkbox" id="guide" checked> <span data-i18n="st.guide">Show guide</span></label>
+  </div>
+
+  <!-- Paint-style ribbon -->
+  <div class="ribbon">
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.edit">Edit</span>
+      <div class="btns">
+        <button id="undoBtn" class="tool" title="Undo (Ctrl+Z)">↩ Undo</button>
+        <button id="redoBtn" class="tool" title="Redo (Ctrl+Y)">↪ Redo</button>
+        <button id="delBtn" class="tool" title="Delete selected (Delete key)">❌ Delete</button>
+        <button id="clearBtn" class="tool" title="Clear everything">🗑 Clear</button>
+      </div>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.tools">Tools</span>
+      <div class="btns">
+        <button class="tool" data-tool="select" title="Select and move a shape">⬚ Select</button>
+        <button class="tool" data-tool="fill" title="Fill a shape (or the background) with Color 1">🪣 Fill</button>
+        <button class="tool" data-tool="text" title="Add text">🔤 Text</button>
+        <button class="tool" data-tool="eraser" title="Eraser: removes the shape you touch">🧽 Eraser</button>
+        <button class="tool" data-tool="picker" title="Pick a colour from the drawing">💧 Picker</button>
+      </div>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.brushes">Brushes</span>
+      <div class="btns">
+        <button class="tool active" data-tool="pencil" title="Pencil">✏️ Pencil</button>
+        <button class="tool" data-tool="brush" title="Brush">🖌️ Brush</button>
+        <button class="tool" data-tool="marker" title="Marker">🖍️ Marker</button>
+        <button class="tool" data-tool="calligraphy" title="Calligraphy pen">✒️ Calligraphy</button>
+        <button class="tool" data-tool="airbrush" title="Airbrush">💨 Airbrush</button>
+        <button class="tool" data-tool="crayon" title="Crayon">🟠 Crayon</button>
+        <button class="tool" data-tool="watercolor" title="Watercolor">🌊 Watercolor</button>
+      </div>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.shapes">Shapes</span>
+      <div class="btns">
+        <button class="tool" data-tool="line" title="Line (hold Shift for straight angles)">╱</button>
+        <button class="tool" data-tool="rectangle" title="Rectangle (Shift = square)">▭</button>
+        <button class="tool" data-tool="rounded" title="Rounded rectangle">▢</button>
+        <button class="tool" data-tool="ellipse" title="Oval (Shift = circle)">◯</button>
+        <button class="tool" data-tool="triangle" title="Triangle">△</button>
+        <button class="tool" data-tool="rtriangle" title="Right triangle">◺</button>
+        <button class="tool" data-tool="diamond" title="Diamond">◇</button>
+        <button class="tool" data-tool="pentagon" title="Pentagon">⬠</button>
+        <button class="tool" data-tool="hexagon" title="Hexagon">⬡</button>
+        <button class="tool" data-tool="star" title="Star">☆</button>
+        <button class="tool" data-tool="arrow" title="Arrow">➜</button>
+      </div>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.size">Size &amp; fill</span>
+      <div class="btns">
+        <input type="range" id="size" min="1" max="40" value="4">
+        <b><span id="sizeOut">4</span> px</b>
+      </div>
+      <select id="fillmode" title="Shape fill">
+        <option value="outline">Outline only</option>
+        <option value="both">Outline + fill (Color 2)</option>
+        <option value="fill">Fill only (Color 2)</option>
+      </select>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.col">Colours</span>
+      <div class="btns colours">
+        <button id="c1box" class="cbox active" title="Color 1 (outline / brush)"></button>
+        <button id="c2box" class="cbox" title="Color 2 (shape fill)"></button>
+        <div id="palette" class="palette"></div>
+        <input type="color" id="custom" value="#2a211a" title="Custom colour">
+      </div>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.img">Image</span>
+      <div class="btns">
+        <button id="rotBtn" class="tool" title="Rotate 90°">⟳ Rotate</button>
+        <button id="flipHBtn" class="tool" title="Flip horizontal">⇋ Flip H</button>
+        <button id="flipVBtn" class="tool" title="Flip vertical">⇅ Flip V</button>
+      </div>
+    </div>
+
+    <div class="pgroup">
+      <span class="glabel" data-i18n="rb.view">View &amp; file</span>
+      <div class="btns">
+        <button id="zoomOutBtn" class="tool" title="Zoom out">🔍−</button>
+        <button id="zoomReset" class="tool" title="100%">100%</button>
+        <button id="zoomIn" class="tool" title="Zoom in (or Ctrl + mouse wheel)">🔍+</button>
+        <label class="check"><input type="checkbox" id="gridChk"> Gridlines</label>
+        <button id="openImg" class="tool" title="Open a picture to trace over">🖼 Open picture</button>
+        <input type="file" id="imgFile" accept="image/*" hidden>
+        <button id="pngBtn" class="tool" title="Save as PNG (Ctrl+S)">⬇ Save PNG</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div class="panel">
+      <div class="toolbar">
+        <button id="completeBtn" class="tool primary" data-i18n="st.complete">🪄 Complete my sketch</button>
+      </div>
+      <div id="wrap" class="canvaswrap">
+        <canvas id="sketch" width="800" height="520"></canvas>
+      </div>
+      <p id="coords" class="status">0, 0 px</p>
+      <p id="detected" class="badge">Detected: keep drawing…</p>
+      <p id="status" class="status">Draw roughly: a flat top and two legs, a chair, a tall frame… I'll work out the rest.</p>
+    </div>
+
+    <div class="panel">
+      <div class="toolbar">
+        <button id="v3d" class="tool active" data-i18n="st.v3d">🧊 3D</button>
+        <button id="v2d" class="tool" data-i18n="st.v2d">📐 2D drawing</button>
+        <button id="buildBtn" class="tool primary" data-i18n="st.build">✨ Build 3D from sketch</button>
+      </div>
+      <div id="viewer"></div>
+      <canvas id="view2d" width="800" height="520" style="display:none"></canvas>
+      <p class="status" data-i18n="st.hint">Drag to rotate, scroll to zoom.</p>
+
+      <div class="sliders">
+        <label><span data-i18n="slw">Width</span> <b id="wOut"></b> cm <input type="range" id="w" min="10" max="400"></label>
+        <label><span data-i18n="sld">Depth</span> <b id="dOut"></b> cm <input type="range" id="d" min="10" max="220"></label>
+        <label><span data-i18n="slh">Height</span> <b id="hOut"></b> cm <input type="range" id="h" min="10" max="220"></label>
+        <label><span data-i18n="slt">Thickness</span> <b id="tOut"></b> cm <input type="range" id="t" min="2" max="15" value="5"></label>
+        <label><span data-i18n="sls">Shelves (template)</span> <b id="sOut"></b> <input type="range" id="s" min="2" max="6" value="3"></label>
+      </div>
+
+      <div class="saverow">
+        <input id="name" data-i18n-ph="st.name" placeholder="Name this design">
+        <button id="saveBtn" class="btn small" data-i18n="st.save">Save design</button>
+      </div>
+      <button id="sendBtn" class="btn wide" data-i18n="st.send">📲 Send this design to the workshop (WhatsApp)</button>
+    </div>
+  </div>
+</section>
+
+<section id="saved" class="saved">
+  <h2 data-i18n="st.saved">My Designs</h2>
+  <div id="gallery" class="gallery"></div>
+  <p id="empty" class="status" data-i18n="st.empty">No saved designs yet. Build one above and press Save.</p>
+</section>
+
+<footer class="foot">
+  <div class="logo light" data-site="name"></div>
+  <p data-i18n="foot.tag">Custom furniture designed by you, handcrafted by us.</p>
+  <nav class="footnav">
+    <a href="index.html" data-i18n="nav.home">Home</a> ·
+    <a href="studio.html" data-i18n="nav.studio">Studio</a> ·
+    <a href="ai.html" data-i18n="nav.ai">AI Designer</a> ·
+    <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  </nav>
+  <p><a data-link="tel" data-site="phone"></a> · <a data-link="wa">WhatsApp</a> · <a data-link="mail" data-site="email"></a></p>
+  <p class="copy">© <span data-year></span> <span data-site="name"></span>. <span data-i18n="foot.rights">All rights reserved.</span></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="site.js"></script>
+<script src="lang.js"></script>
+<script src="app.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b0f09c4a42f2d3',t:'MTc5MjA4OTQ5Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

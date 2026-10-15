@@ -7,6 +7,7 @@ body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--bg);c
 h1,h2,h3{font-weight:600;margin:0 0 .5em}
 a{color:var(--accent)}
 
+/*jjjjjjjjjjjj*/
 /* header */
 .top{display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .logo{font-size:1.35rem;font-weight:700;color:var(--ink);text-decoration:none}

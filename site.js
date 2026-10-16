@@ -1,6 +1,7 @@
 // ====== EDIT ONLY THIS BLOCK: your business details ======
 const SITE = {
   name: "Your Business Name",
+  creator: "Karan Kumar",
   phone: "+92 300 1234567",
   whatsapp: "923001234567",          // country code, no + or spaces
   email: "hello@yourbusiness.com",

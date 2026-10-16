@@ -185,3 +185,11 @@ select,#name{padding:8px 10px;border:1px solid var(--line);border-radius:6px;fon
 [dir=rtl] .top nav a{margin-left:0;margin-right:20px}
 [dir=rtl] .num{margin-left:0}
 [dir=rtl] .revgrid,[dir=rtl] .faqlist,[dir=rtl] .aigrid{direction:rtl}
+
+/* AI voice input */
+.mic-button{white-space:nowrap;min-width:92px}
+.mic-button.listening{background:#9e3128;animation:mic-pulse 1.2s infinite}
+.mic-button:disabled{opacity:.55;cursor:not-allowed}
+@keyframes mic-pulse{50%{box-shadow:0 0 0 5px rgba(158,49,40,.18)}}
+.creator-credit{font-size:.84rem;opacity:.82;margin:8px 0 0}
+@media(max-width:540px){.chatbar{flex-wrap:wrap}.chatbar input{flex-basis:100%}.chatbar button{flex:1}}

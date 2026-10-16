@@ -14,7 +14,7 @@ The admin key is read from site.js -> SITE.adminKey, so you only need to edit it
 Run it:   python server.py      (then open http://localhost:8000)
 Dashboard: http://localhost:8000/admin?key=workshop123   (change the key in site.js!)
 """
-import json, re, sqlite3, os, datetime
+import json, re, sqlite3, os, datetime, urllib.request, urllib.error, threading, time
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from html import escape as E
@@ -57,6 +57,99 @@ def db():
                         [(n, c, r, t, d, now) for n, c, r, t, d in SEED_REVIEWS])
     con.commit()
     return con
+
+
+
+_AI_REQUESTS = {}
+_AI_REQUESTS_LOCK = threading.Lock()
+
+def _ai_rate_limited(client_ip):
+    """Allow at most 20 AI requests per hour per client address."""
+    now = time.time()
+    with _AI_REQUESTS_LOCK:
+        if len(_AI_REQUESTS) > 2000:
+            for ip in list(_AI_REQUESTS):
+                if not _AI_REQUESTS[ip] or _AI_REQUESTS[ip][-1] < now - 3600:
+                    _AI_REQUESTS.pop(ip, None)
+        recent = [stamp for stamp in _AI_REQUESTS.get(client_ip, []) if stamp > now - 3600]
+        if len(recent) >= 20:
+            _AI_REQUESTS[client_ip] = recent
+            return True
+        recent.append(now)
+        _AI_REQUESTS[client_ip] = recent
+        return False
+
+def ai_design(data, client_ip='unknown'):
+    """Turn a furniture prompt into a bounded, structured design spec using a server-side key."""
+    if _ai_rate_limited(client_ip):
+        return 429, {'ok': False, 'error': 'AI request limit reached for this address. Please try again later.'}
+    prompt = str(data.get('prompt', '')).strip()[:4000]
+    if not prompt:
+        return 400, {'ok': False, 'error': 'prompt is required'}
+    api_key = os.environ.get('OPENAI_API_KEY', '').strip()
+    if not api_key:
+        return 503, {'ok': False, 'error': 'AI is not configured; use the built-in designer or configure OPENAI_API_KEY on the server.'}
+    current = data.get('currentDesign') or {}
+    system_prompt = (
+        'You are a practical furniture designer. Convert the user prompt into one JSON object with keys '
+        'type, style, material, w, d, h, doors, drawers, shelves, corner, cornerWidth, notes. '
+        'All dimensions w,d,h and cornerWidth are centimeters. Keep every explicit user constraint exact: '
+        'door counts, drawer counts, shelf counts, dimensions, material, style, and corner/L-shaped modules. '
+        'Never simplify a detailed request into a plain box. For 4*5 with no units, interpret it as 4 feet wide '
+        'by 5 feet high; use a practical depth and explain that interpretation in notes. If units are explicit, obey them. '
+        'Recognize wardrobe/almira/almari, cupboard, cabinets, bookcases, dressers, sideboards, TV units, shoe cabinets, '
+        'tables, desks, chairs, beds, sofas, and benches. If the user is refining a previous design, preserve its '
+        'unchanged properties. Use numeric values for counts and dimensions and a boolean for corner. '
+        'Allowed types: table, chair, shelf, bed, wardrobe, cabinet, dresser, sideboard, tv_unit, shoe_cabinet, desk, sofa, bench. '
+        'Allowed styles: modern, classic, industrial, minimal. Allowed materials: oak, walnut, pine, teak, steel. '
+        'Return JSON only; no markdown.'
+    )
+    user_prompt = 'User request: ' + prompt + '\nCurrent design to preserve where not changed: ' + json.dumps(current, ensure_ascii=False)[:3000]
+    payload = json.dumps({
+        'model': os.environ.get('OPENAI_MODEL', 'gpt-4o-mini'),
+        'messages': [{'role': 'system', 'content': system_prompt}, {'role': 'user', 'content': user_prompt}],
+        'response_format': {'type': 'json_object'}, 'temperature': 0.15
+    }).encode('utf-8')
+    request = urllib.request.Request(
+        'https://api.openai.com/v1/chat/completions', data=payload,
+        headers={'Authorization': 'Bearer ' + api_key, 'Content-Type': 'application/json'}, method='POST')
+    try:
+        with urllib.request.urlopen(request, timeout=35) as response:
+            result = json.loads(response.read().decode('utf-8'))
+        content = result.get('choices', [{}])[0].get('message', {}).get('content', '')
+        design = json.loads(content)
+        allowed_types = {'table','chair','shelf','bed','wardrobe','cabinet','dresser','sideboard','tv_unit','shoe_cabinet','desk','sofa','bench'}
+        dtype = str(design.get('type', 'cabinet')).lower().replace('-', '_').replace(' ', '_')
+        if 'almari' in dtype or 'wardrobe' in dtype or 'almira' in dtype:
+            dtype = 'wardrobe'
+        if dtype not in allowed_types:
+            dtype = 'cabinet'
+        def bounded_number(value, default, low, high):
+            try:
+                return max(low, min(high, int(round(float(value)))))
+            except (TypeError, ValueError):
+                return default
+        safe = {
+            'type': dtype,
+            'style': design.get('style', 'modern') if design.get('style') in ('modern','classic','industrial','minimal') else 'modern',
+            'material': design.get('material', 'walnut') if design.get('material') in ('oak','walnut','pine','teak','steel') else 'walnut',
+            'w': bounded_number(design.get('w', design.get('width_cm')), 100, 30, 400),
+            'd': bounded_number(design.get('d', design.get('depth_cm')), 45, 20, 250),
+            'h': bounded_number(design.get('h', design.get('height_cm')), 90, 30, 300),
+            'doors': bounded_number(design.get('doors', design.get('door_count')), 0, 0, 12),
+            'drawers': bounded_number(design.get('drawers', design.get('drawer_count')), 0, 0, 12),
+            'shelves': bounded_number(design.get('shelves', design.get('shelf_count')), 0, 0, 12),
+            'corner': bool(design.get('corner', design.get('cornerCabinet', False))),
+            'cornerWidth': bounded_number(design.get('cornerWidth', design.get('corner_width')), 45, 25, 150),
+            'notes': str(design.get('notes', ''))[:280]
+        }
+        return 200, {'ok': True, 'design': safe}
+    except urllib.error.HTTPError:
+        return 502, {'ok': False, 'error': 'The AI provider rejected the design request. Check server configuration and model access.'}
+    except (urllib.error.URLError, TimeoutError):
+        return 502, {'ok': False, 'error': 'The AI provider could not be reached. The built-in designer remains available.'}
+    except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+        return 502, {'ok': False, 'error': 'The AI returned an invalid design; please retry or use the built-in designer.'}
 
 class Handler(SimpleHTTPRequestHandler):
     # ---------- helpers ----------
@@ -130,10 +223,15 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         u = urlparse(self.path)
         data = self._json_body()
-        if data is None:
-            self._send(400, json.dumps({'ok': False, 'error': 'bad or missing JSON body'}))
+        if data is None or not isinstance(data, dict):
+            self._send(400, json.dumps({'ok': False, 'error': 'bad or missing JSON object body'}))
             return
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+
+        if u.path == '/api/design':
+            status, result = ai_design(data, self.client_address[0])
+            self._send(status, json.dumps(result, ensure_ascii=False))
+            return
 
         if u.path == '/api/reviews':
             name = str(data.get('name', '')).strip()[:80]

@@ -14,10 +14,12 @@
     steel:  { label: 'Black steel', color: '#2b2b2b', rough: 0.35 }
   };
   const TYPES = {
-    table: { w: 140, d: 80,  h: 75,  label: 'Table' },
-    chair: { w: 45,  d: 48,  h: 90,  label: 'Chair' },
-    shelf: { w: 90,  d: 30,  h: 180, label: 'Bookshelf' },
-    bed:   { w: 160, d: 200, h: 100, label: 'Bed' }
+    table:{w:140,d:80,h:75,label:'Table'}, chair:{w:45,d:48,h:90,label:'Chair'},
+    shelf:{w:90,d:30,h:180,label:'Bookshelf'}, bed:{w:160,d:200,h:100,label:'Bed'},
+    wardrobe:{w:122,d:56,h:200,label:'Wardrobe / Almira'}, cabinet:{w:100,d:45,h:90,label:'Cabinet'},
+    dresser:{w:100,d:45,h:95,label:'Dresser'}, sideboard:{w:150,d:45,h:85,label:'Sideboard'},
+    tv_unit:{w:150,d:40,h:55,label:'TV unit'}, shoe_cabinet:{w:90,d:35,h:100,label:'Shoe cabinet'},
+    desk:{w:140,d:65,h:75,label:'Desk'}, sofa:{w:200,d:85,h:85,label:'Sofa'}, bench:{w:120,d:40,h:45,label:'Bench'}
   };
   const STYLES = { modern: 'Modern', classic: 'Classic', industrial: 'Industrial', minimal: 'Minimal' };
 
@@ -53,74 +55,14 @@
   }
 
   // ---------------- understand the request ----------------
-  function parse(text) {
-    const s = ' ' + text.toLowerCase().replace(/[.,!?]/g, ' ') + ' ';
-    const out = { type: null, material: null, style: null, w: null, d: null, h: null, shelves: null, people: null, found: [] };
-    const got = k => { out.found.push(k); };
-
-    if (/(book|shelf|shelv|rack|library|almari|cabinet)/.test(s)) { out.type = 'shelf'; got('bookshelf'); }
-    else if (/(bed|palang|crib)/.test(s)) { out.type = 'bed'; got('bed'); }
-    else if (/(chair|stool|seat|kursi)/.test(s)) { out.type = 'chair'; got('chair'); }
-    else if (/(table|desk|dining|coffee|mez)/.test(s)) { out.type = 'table'; got('table'); }
-
-    if (/(walnut|akhrot|sheesham|shisham|dark wood)/.test(s)) { out.material = 'walnut'; got('walnut wood'); }
-    else if (/(pine|light wood|chilgoza)/.test(s)) { out.material = 'pine'; got('pine wood'); }
-    else if (/(teak|sagwan|saagwan)/.test(s)) { out.material = 'teak'; got('teak wood'); }
-    else if (/(oak|oakwood)/.test(s)) { out.material = 'oak'; got('oak wood'); }
-    if (/(steel|metal|iron|industrial frame)/.test(s)) { out.material = 'steel'; if (!out.found.includes('steel')) got('steel'); }
-
-    if (/(industrial|metal frame|loft)/.test(s)) { out.style = 'industrial'; out.material = 'steel'; got('industrial style'); }
-    else if (/(classic|royal|traditional|antique|carved)/.test(s)) { out.style = 'classic'; got('classic style'); }
-    else if (/(minimal|simple|japandi)/.test(s)) { out.style = 'minimal'; got('minimal style'); }
-    else if (/(modern|scandi|contemporary)/.test(s)) { out.style = 'modern'; got('modern style'); }
-
-    const sh = s.match(/(\d)\s*(?:no\.?\s*of\s*)?shel/);
-    if (sh) { out.shelves = Math.max(2, Math.min(6, +sh[1])); got(out.shelves + ' shelves'); }
-
-    const ppl = s.match(/(\d+)\s*(?:people|person|seater|seats?)/);
-    if (ppl) { out.people = Math.max(1, Math.min(10, +ppl[1])); got('for ' + out.people + ' people'); }
-
-    if (/king/.test(s)) { out.w = 180; out.d = 200; got('king size'); }
-    else if (/queen/.test(s)) { out.w = 150; out.d = 200; got('queen size'); }
-    else if (/single/.test(s) && out.type === 'bed') { out.w = 90; out.d = 200; got('single size'); }
-
-    const dims = s.match(/(\d{2,3})\s*(?:x|×|by)\s*(\d{2,3})(?:\s*(?:x|×|by)\s*(\d{2,3}))?/);
-    if (dims) { out.w = +dims[1]; if (dims[3]) { out.d = +dims[2]; out.h = +dims[3]; } else { out.h = +dims[2]; } got('size ' + dims[0].trim() + ' cm'); }
-    else {
-      const cm = s.match(/(\d{2,3})\s*(?:cm|centimeter)/);
-      if (cm) { got(cm[1] + ' cm');
-        const v = +cm[1];
-        if (/tall|high|height/.test(s)) out.h = v;
-        else if (/deep|depth/.test(s)) out.d = v;
-        else if (/wide|width|long|length/.test(s)) out.w = v;
-        else out.w = v;
-      }
-    }
-    return out;
-  }
-
-  // ---------------- design a piece ----------------
-  function design(p) {
-    const type = p.type || (current ? current.type : 'table');
-    const base = TYPES[type];
-    const style = p.style || (current && current.style) || 'modern';
-    const material = p.material || (current && current.material) || (style === 'industrial' ? 'steel' : 'walnut');
-    const d = {
-      type, style, material,
-      w: clamp(p.w || (p.people && type === 'table' ? p.people * 55 : null) || (current && current.w) || base.w, 30, 260),
-      d: clamp(p.d || (current && current.d) || base.d, 25, 220),
-      h: clamp(p.h || (current && current.h) || (type === 'chair' && p.style ? 90 : base.h), 40, 220),
-      shelves: p.shelves || (current && current.shelves) || 4
-    };
-    if (type === 'shelf' && p.h == null && d.h < 140) d.h = 180;
-    if (p.people && type === 'chair') d.w = 45;
-    return d;
-  }
+  function parse(text) { return window.FurnitureAI.parse(text, current); }
+  function design(p) { return window.FurnitureAI.normalize(p, current); }
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   // ---------------- generate strokes (front view) ----------------
   // Same object format as the studio: {kind, pts, closed, color, size, brush, fill}
   function genStrokes(d) {
+    if (window.FurnitureAI.isStorage(d)) return window.FurnitureAI.drawStorage(d, CW, CH);
     const S = [];
     const ink = '#2a211a', fillCol = MATERIALS[d.material].color + '55';
     const rect = (x0, y0, x1, y1, fill) => S.push({
@@ -184,6 +126,20 @@
       rect(x0, top - hb, x0 + bw * 0.06, top + th, true);                       // headboard
       if (d.style === 'classic') rect(x0 - bw * 0.012, top - hb - bh * 0.05, x0 + bw * 0.072, top - hb, true); // crown
     }
+    if (d.type === 'desk' || d.type === 'bench') {
+      const seatY = d.type === 'bench' ? y0 + bh * .68 : y0 + bh * .16, th = bh * .08, leg = bw * .035;
+      rect(x0, seatY, x1, seatY + th, true);
+      rect(x0 + bw * .06, seatY + th, x0 + bw * .06 + leg, y1, false);
+      rect(x1 - bw * .06 - leg, seatY + th, x1 - bw * .06, y1, false);
+      if (d.type === 'desk') { rect(x0 + bw*.18, seatY+th, x1-bw*.18, seatY+th+bh*.16, false); line(x0+bw*.5,seatY+th,x0+bw*.5,seatY+th+bh*.16); }
+    }
+    if (d.type === 'sofa') {
+      const seatY=y0+bh*.48, baseY=y0+bh*.67, arm=bw*.12;
+      rect(x0+arm,seatY,x1-arm,baseY,true); rect(x0,y0+bh*.24,x0+arm,baseY,true); rect(x1-arm,y0+bh*.24,x1,baseY,true);
+      rect(x0+arm,y0+bh*.20,x1-arm,seatY,false);
+      const cushions=3; for(let i=1;i<cushions;i++){const x=x0+arm+(x1-x0-2*arm)*i/cushions;line(x,seatY,x,baseY);}
+      rect(x0+bw*.08,baseY,x0+bw*.18,y1,false); rect(x1-bw*.18,baseY,x1-bw*.08,y1,false);
+    }
     return S;
   }
 
@@ -234,6 +190,7 @@
 
   function build3D(S, d) {
     if (model) { scene.remove(model); model.traverse(o => { if (o.geometry) o.geometry.dispose(); }); model = null; }
+    if (window.FurnitureAI.isStorage(d)) { model = window.FurnitureAI.buildStorageModel(d, THREE); scene.add(model); camDist = Math.max(d.w * 1.45, d.d, d.h) * 2.25 + 80; updateCam(); return; }
     const items = S.filter(s => s.pts && s.pts.length > 1);
     if (!items.length) return;
     const B = bbox(items.flatMap(s => s.pts));
@@ -310,24 +267,19 @@
       '<span class="mchip">🎨 ' + STYLES[d.style] + '</span>' +
       '<span class="mchip">🪵 ' + MATERIALS[d.material].label + '</span>' +
       '<span class="mchip">📏 ' + d.w + ' × ' + d.d + ' × ' + d.h + ' cm</span>' +
-      (d.type === 'shelf' ? '<span class="mchip">🗄 ' + d.shelves + ' shelves</span>' : '');
+      (window.FurnitureAI.isStorage(d) ? '<span class="mchip">🚪 ' + d.doors + ' doors · ' + d.drawers + ' drawers · ' + d.shelves + ' shelves' + (d.corner ? ' · corner return' : '') + '</span>' : '');
   }
 
-  function replyFor(d, p) {
-    let r = 'Here you go — a <b>' + STYLES[d.style].toLowerCase() + ' ' + MATERIALS[d.material].label.toLowerCase() + ' ' + TYPES[d.type].label.toLowerCase() +
-      '</b>, <b>' + d.w + ' × ' + d.d + ' × ' + d.h + ' cm</b>' + (d.type === 'shelf' ? ' with <b>' + d.shelves + ' shelves</b>' : '') + '.';
-    r += '<br><br>I drew the sketch and built the 3D model on the right — drag it to rotate. ';
-    const hints = [];
-    if (!p.material) hints.push('a wood (oak, walnut, pine, teak, steel)');
-    if (!p.style) hints.push('a style (modern, classic, industrial, minimal)');
-    if (!p.w && !p.h) hints.push('a size in cm');
-    if (hints.length) r += 'Want changes? Just say a different ' + hints.join(', ') + '.';
-    else r += 'Want changes? Say “make it wider”, “change to oak”, or “5 shelves”.';
+  function replyFor(d, p, aiPowered) {
+    let r = 'Designed a <b>' + STYLES[d.style].toLowerCase() + ' ' + MATERIALS[d.material].label.toLowerCase() + ' ' + TYPES[d.type].label.toLowerCase() + '</b> (' + d.w + ' × ' + d.d + ' × ' + d.h + ' cm).';
+    if (window.FurnitureAI.isStorage(d)) r += '<br><b>Front layout:</b> ' + d.doors + ' doors, ' + d.drawers + ' drawers, ' + d.shelves + ' shelves' + (d.corner ? ', plus a corner return unit' : '') + '.';
+    if (d.notes) { const safeNote=String(d.notes).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); r += '<br><small>' + safeNote + '</small>'; }
+    r += '<br><br>' + (aiPowered ? 'AI interpreted the request into a structured design.' : 'Built-in designer generated this locally; configure OPENAI_API_KEY on the server for free-form AI interpretation.') + ' The drawing and rotatable 3D model are on the right. You can refine it with another prompt.';
     return r;
   }
 
-  function makeIt(rawText, silent) {
-    const p = parse(rawText || '');
+  function makeIt(rawText, aiSpec) {
+    const p = aiSpec || parse(rawText || '');
     const d = design(p);
     current = d;
     const S = genStrokes(d);
@@ -337,20 +289,46 @@
     return { d, p, S };
   }
 
-  function handleUser(text) {
+  async function requestAI(text) {
+    try {
+      const response = await fetch('/api/design', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt:text,currentDesign:current}) });
+      const data = await response.json();
+      if (response.ok && data && data.ok && data.design) return data.design;
+    } catch (e) { /* static-only hosting falls back to the local furniture parser */ }
+    return null;
+  }
+
+  async function handleUser(text) {
     if (!text.trim()) return;
     bubble('me', text.replace(/</g, '&lt;'), true);
     input.value = '';
     const think = thinking();
-    setTimeout(() => {
-      const { d, p } = makeIt(text);
-      think.remove();
-      bubble('ai', replyFor(d, p));
-    }, 900);
+    const aiSpec = await requestAI(text);
+    const { d, p } = makeIt(text, aiSpec);
+    think.remove();
+    bubble('ai', replyFor(d, p, !!aiSpec));
   }
 
   $('#aiSend').onclick = () => handleUser(input.value);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') handleUser(input.value); });
+
+  const mic = $('#aiMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (mic && SpeechRecognition) {
+    const recognition = new SpeechRecognition(); recognition.interimResults = true; recognition.maxAlternatives = 1; recognition.continuous = false;
+    let finalTranscript = '';
+    mic.addEventListener('click', () => {
+      finalTranscript = ''; recognition.lang = document.documentElement.lang === 'ur' ? 'ur-PK' : 'en-US';
+      mic.classList.add('listening'); mic.setAttribute('aria-pressed','true'); mic.textContent = '⏹ Listening';
+      try { recognition.start(); } catch (e) { mic.classList.remove('listening'); mic.setAttribute('aria-pressed','false'); }
+    });
+    recognition.onresult = e => {
+      let interim = ''; for (let i=e.resultIndex; i<e.results.length; i++) { const part=e.results[i][0].transcript; if(e.results[i].isFinal) finalTranscript += part; else interim += part; }
+      input.value = (finalTranscript + ' ' + interim).trim();
+    };
+    recognition.onend = () => { mic.classList.remove('listening'); mic.setAttribute('aria-pressed','false'); mic.textContent = '🎙 Speak'; if(finalTranscript.trim()) handleUser(finalTranscript.trim()); };
+    recognition.onerror = () => { mic.classList.remove('listening'); mic.setAttribute('aria-pressed','false'); mic.textContent = '🎙 Speak'; };
+  } else if (mic) { mic.disabled = true; mic.title = 'Voice input is not supported by this browser. Try Chrome or Edge over HTTPS.'; }
   document.querySelectorAll('.chip').forEach(c => c.onclick = () => handleUser(c.dataset.prompt || c.textContent));
   $('#aiRedo').onclick = () => {
     const S = genStrokes(current);
@@ -361,11 +339,11 @@
   $('#openStudio').onclick = () => {
     if (!current) return;
     const S = genStrokes(current).map(o => ({ ...o, fill: undefined }));
-    try { localStorage.setItem('woodcraft_handoff', JSON.stringify({ strokes: S, type: current.type, material: current.material })); } catch (e) {}
+    try { localStorage.setItem('woodcraft_handoff', JSON.stringify({ strokes: S, type: window.FurnitureAI.isStorage(current) ? 'shelf' : current.type, material: current.material })); } catch (e) {}
     location.href = 'studio.html';
   };
 
   // greeting
-  makeIt('walnut dining table 180x80x75', true);
+  makeIt('walnut dining table 180x80x75');
   bubble('ai', 'Assalam-o-Alaikum! 👋 I am your AI design assistant. Tell me what furniture you want — for example <i>“modern pine bookshelf with 5 shelves”</i> or <i>“steel chair, industrial style”</i> — and I will draw it and build a 3D model.');
 })();

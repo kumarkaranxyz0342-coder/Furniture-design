@@ -7,7 +7,6 @@ const SITE = {
   address: "Your street address, City, Pakistan",
   hours: "Mon – Sat: 9:00 AM – 6:00 PM",
   closed: "Sunday: Closed",
-  adminKey: "workshop123"        // CHANGE THIS: it protects /admin and the designs API
 };
 // =========================================================
 

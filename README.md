@@ -57,4 +57,4 @@ To set your own business details, edit the business name and contact information
 
 ## License
 
-Add a license here (for example, MIT) if you want others to be able to use or modify this project.
+© 2026 Karan Kumar. All rights reserved.
